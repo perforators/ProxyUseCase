@@ -14,15 +14,16 @@ internal class Processor(
     override fun process(resolver: Resolver): List<KSAnnotated> {
         val symbols = resolver.getSymbolsWithAnnotation(GENERATE_USE_CASE_ANNOTATION)
         val (valid, invalid) = symbols.partition { it.validate() }
-        valid
-            .filterIsInstance<KSClassDeclaration>()
-            .onEach {
-                if (!it.isPublic()) {
-                    error("Class with annotation $GENERATE_USE_CASE_ANNOTATION must be public, but ${it.simpleName.asString()} not!")
-                }
+        valid.filterIsInstance<KSClassDeclaration>().forEach {
+            require(it.isPublic()) {
+                "Class with annotation $GENERATE_USE_CASE_ANNOTATION must be public, but ${it.simpleName.asString()} not!"
             }
-            .forEach { it.accept(FunctionVisitor(codeGenerator), Unit) }
-        return invalid.toList()
+            require(it.typeParameters.isEmpty()) {
+                "Class with annotation $GENERATE_USE_CASE_ANNOTATION not support generics for class ${it.simpleName.asString()}."
+            }
+            it.accept(FunctionVisitor(codeGenerator), Unit)
+        }
+        return invalid
     }
 
     companion object {

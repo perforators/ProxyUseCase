@@ -17,7 +17,9 @@ internal class FunctionVisitor(
 
     override fun visitClassDeclaration(classDeclaration: KSClassDeclaration, data: Unit) {
         classDeclaration.getDeclaredFunctions()
-            .filter { it.isPublic() && it.isMember() && it.isNotConstructor() && it.isNotExtension() }
+            .filter {
+                it.isPublic() && it.isMember() && it.isNotConstructor() && it.isNotExtension() && it.isNotGeneric()
+            }
             .forEach { it.accept(this, data) }
     }
 
@@ -26,6 +28,8 @@ internal class FunctionVisitor(
     private fun KSFunctionDeclaration.isNotConstructor() = !isConstructor()
 
     private fun KSFunctionDeclaration.isNotExtension() = extensionReceiver == null
+
+    private fun KSFunctionDeclaration.isNotGeneric() = typeParameters.isEmpty()
 
     override fun visitFunctionDeclaration(function: KSFunctionDeclaration, data: Unit) {
         useCaseGenerator.generate(function)

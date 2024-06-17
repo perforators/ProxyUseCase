@@ -4,6 +4,7 @@ import com.google.devtools.ksp.processing.CodeGenerator
 import com.google.devtools.ksp.processing.Dependencies
 import com.google.devtools.ksp.symbol.KSClassDeclaration
 import com.google.devtools.ksp.symbol.KSFunctionDeclaration
+import com.google.devtools.ksp.symbol.KSTypeReference
 import com.google.devtools.ksp.symbol.Modifier
 import java.io.OutputStreamWriter
 
@@ -34,7 +35,7 @@ class UseCaseGenerator(
     private fun OutputStreamWriter.appendPackage(function: KSFunctionDeclaration) {
         val packageName = function.packageName()
         if (packageName.isNotEmpty()) {
-            append("$packageName\n\n")
+            append("package $packageName\n\n")
         }
     }
 
@@ -48,7 +49,7 @@ class UseCaseGenerator(
     ) {
         val className = function.className()
         val parent = function.parentDeclaration as KSClassDeclaration
-        append("class $className @Inject constructor(private val target: ${parent.simpleName.asString()}) {\n")
+        append("class $className @Inject constructor(private val target: ${parent.qualifiedName?.asString()}) {\n")
         appendContent()
         append("}\n")
     }
@@ -59,7 +60,7 @@ class UseCaseGenerator(
     ) {
         val suspend = if (function.isSuspend()) "suspend " else ""
         val arguments = function.arguments()
-        val resultType = function.returnType!!.resolve().declaration.simpleName.asString()
+        val resultType = function.returnType!!.toName()
         append("\t${suspend}operator fun invoke($arguments): $resultType {\n")
         appendBody()
         append("\t}\n")
@@ -70,7 +71,7 @@ class UseCaseGenerator(
     }
 
     private fun KSFunctionDeclaration.arguments() = parameters.joinToString(separator = ", ") {
-        "${it.name?.asString()}: ${it.type.resolve().declaration.simpleName.asString()}"
+        "${it.name?.asString()}: ${it.type.toName()}"
     }
 
     private fun KSFunctionDeclaration.argumentsNames() = parameters.joinToString(separator = ", ") {
@@ -87,5 +88,15 @@ class UseCaseGenerator(
 
     private fun String.capitalize() = replaceFirstChar {
         if (it.isLowerCase()) it.uppercaseChar() else it
+    }
+
+    private fun KSTypeReference.toName(): String {
+        val type = resolve().declaration.qualifiedName?.asString() ?: ""
+        val typeArguments = element?.typeArguments
+        if (typeArguments.isNullOrEmpty()) return type
+        val arguments = typeArguments
+            .mapNotNull { it.type }
+            .joinToString(prefix = "<", postfix = ">", separator = ", ") { it.toName() }
+        return type + arguments
     }
 }

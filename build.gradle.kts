@@ -11,7 +11,7 @@ plugins {
 val kspVersion = "1.9.21-1.0.15"
 
 group = "io.github.perforators"
-version = "1.0-rc"
+version = "1.1-rc4"
 
 repositories {
     mavenCentral()
@@ -49,7 +49,8 @@ publishing {
         artifact(sourcesJar)
 
         pom {
-            name.set("ds")
+            name.set("proxy-use-cases")
+            url.set("https://github.com/perforators/ProxyUseCase")
             description.set("KSP plugin for generation of proxy use cases.")
             inceptionYear.set("2024")
 
@@ -65,6 +66,9 @@ publishing {
                     name.set("Egor Krivochkov")
                     email.set("krivochkov01@mail.ru")
                 }
+            }
+            scm {
+                url.set("https://github.com/perforators/ProxyUseCase")
             }
         }
     }
