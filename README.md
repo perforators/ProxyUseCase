@@ -1,4 +1,4 @@
-# Proxy use case.
+# Proxy use case
 
 It is KSP plugin for generation of proxy use cases.
 
@@ -10,6 +10,8 @@ The plugin will generate classes for all public and internal methods with name `
 ### Example
 
 ```kotlin
+package org.example
+
 @GenerateUseCases
 class Repository {
   fun loadUsers(): List<User> { ... }
