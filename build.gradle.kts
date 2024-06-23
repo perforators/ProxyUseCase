@@ -9,9 +9,10 @@ plugins {
 }
 
 val kspVersion = "1.9.21-1.0.15"
+val kotlinPoetVersion = "1.17.0"
 
 group = "io.github.perforators"
-version = "1.1-rc4"
+version = "1.1"
 
 repositories {
     mavenCentral()
@@ -21,6 +22,8 @@ repositories {
 dependencies {
     testImplementation(kotlin("test"))
     implementation("com.google.devtools.ksp:symbol-processing-api:$kspVersion")
+    implementation("com.squareup:kotlinpoet:$kotlinPoetVersion")
+    implementation("com.squareup:kotlinpoet-ksp:$kotlinPoetVersion")
 }
 
 tasks.test {

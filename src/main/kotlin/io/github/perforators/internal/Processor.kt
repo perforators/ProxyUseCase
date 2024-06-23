@@ -1,10 +1,10 @@
 package io.github.perforators.internal
 
-import com.google.devtools.ksp.isPublic
 import com.google.devtools.ksp.processing.CodeGenerator
 import com.google.devtools.ksp.processing.Resolver
 import com.google.devtools.ksp.processing.SymbolProcessor
-import com.google.devtools.ksp.symbol.*
+import com.google.devtools.ksp.symbol.KSAnnotated
+import com.google.devtools.ksp.symbol.KSClassDeclaration
 import com.google.devtools.ksp.validate
 
 internal class Processor(
@@ -15,11 +15,8 @@ internal class Processor(
         val symbols = resolver.getSymbolsWithAnnotation(GENERATE_USE_CASE_ANNOTATION)
         val (valid, invalid) = symbols.partition { it.validate() }
         valid.filterIsInstance<KSClassDeclaration>().forEach {
-            require(it.isPublic()) {
-                "Class with annotation $GENERATE_USE_CASE_ANNOTATION must be public, but ${it.simpleName.asString()} not!"
-            }
-            require(it.typeParameters.isEmpty()) {
-                "Class with annotation $GENERATE_USE_CASE_ANNOTATION not support generics for class ${it.simpleName.asString()}."
+            require(it.isPublicOrInternal()) {
+                "Class with annotation $GENERATE_USE_CASE_ANNOTATION must be public or internal, but ${it.simpleName.asString()} not!"
             }
             it.accept(FunctionVisitor(codeGenerator), Unit)
         }
