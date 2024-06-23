@@ -12,7 +12,7 @@ val kspVersion = "1.9.21-1.0.15"
 val kotlinPoetVersion = "1.17.0"
 
 group = "io.github.perforators"
-version = "1.1"
+version = "1.2"
 
 repositories {
     mavenCentral()

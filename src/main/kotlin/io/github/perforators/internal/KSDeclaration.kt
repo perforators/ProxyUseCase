@@ -19,7 +19,12 @@ internal fun KSDeclaration.isPublicOrInternal() = isPublic() || isInternal()
 
 internal fun KSClassDeclaration.toTypeName(
     typeParameterResolver: TypeParameterResolver
-): TypeName = toClassName().parameterizedBy(typeVariables(typeParameterResolver))
+): TypeName {
+    val className = toClassName()
+    val typeVariables = typeVariables(typeParameterResolver)
+    if (typeVariables.isEmpty()) return className
+    return className.parameterizedBy(typeVariables)
+}
 
 internal fun KSFunctionDeclaration.isMember() = functionKind == FunctionKind.MEMBER
 
