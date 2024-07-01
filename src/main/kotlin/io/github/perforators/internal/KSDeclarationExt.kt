@@ -3,7 +3,11 @@ package io.github.perforators.internal
 import com.google.devtools.ksp.isConstructor
 import com.google.devtools.ksp.isInternal
 import com.google.devtools.ksp.isPublic
-import com.google.devtools.ksp.symbol.*
+import com.google.devtools.ksp.symbol.FunctionKind
+import com.google.devtools.ksp.symbol.KSClassDeclaration
+import com.google.devtools.ksp.symbol.KSDeclaration
+import com.google.devtools.ksp.symbol.KSFunctionDeclaration
+import com.google.devtools.ksp.symbol.Modifier
 import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
 import com.squareup.kotlinpoet.TypeName
 import com.squareup.kotlinpoet.TypeVariableName

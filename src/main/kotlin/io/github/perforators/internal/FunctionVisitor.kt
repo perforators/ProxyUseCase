@@ -21,8 +21,9 @@ internal class FunctionVisitor(
     }
 
     override fun visitFunctionDeclaration(function: KSFunctionDeclaration, data: Unit) {
+        val containingFile = function.containingFile ?: return
         UseCase(function)
             .asFileSpec()
-            .writeTo(codeGenerator, Dependencies(true, function.containingFile!!))
+            .writeTo(codeGenerator, Dependencies(true, containingFile))
     }
 }

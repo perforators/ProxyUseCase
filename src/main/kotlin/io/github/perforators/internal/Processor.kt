@@ -16,7 +16,8 @@ internal class Processor(
         val (valid, invalid) = symbols.partition { it.validate() }
         valid.filterIsInstance<KSClassDeclaration>().forEach {
             require(it.isPublicOrInternal()) {
-                "Class with annotation $GENERATE_USE_CASE_ANNOTATION must be public or internal, but ${it.simpleName.asString()} not!"
+                "Class with annotation $GENERATE_USE_CASE_ANNOTATION " +
+                    "must be public or internal, but ${it.simpleName.asString()} not!"
             }
             it.accept(FunctionVisitor(codeGenerator), Unit)
         }
